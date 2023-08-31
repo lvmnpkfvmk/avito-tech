@@ -18,7 +18,7 @@ type DeleteSegmentRequest struct {
 }
 
 type SegmentHandler struct {
-	repo repository.ISegmentRepository
+	repo   repository.ISegmentRepository
 	logger *slog.Logger
 }
 

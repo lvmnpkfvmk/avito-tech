@@ -7,11 +7,10 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/lvmnpkfvmk/avito-tech/config"
-	"github.com/lvmnpkfvmk/avito-tech/internal/logger"
 	"github.com/lvmnpkfvmk/avito-tech/internal/handlers"
+	"github.com/lvmnpkfvmk/avito-tech/internal/logger"
 	"github.com/lvmnpkfvmk/avito-tech/internal/repository"
 )
-
 
 func main() {
 	cfg := config.Get()
@@ -30,7 +29,6 @@ func run(logger *slog.Logger, cfg *config.Config, ctx context.Context) error {
 	}
 	logger.Debug("Repository is ready", repo)
 
-
 	// Echo instance
 	e := echo.New()
 
@@ -45,9 +43,9 @@ func run(logger *slog.Logger, cfg *config.Config, ctx context.Context) error {
 	segmentRoute.POST("/", sHandler.CreateSegment)
 	segmentRoute.DELETE("/", sHandler.DeleteSegment)
 	segmentRoute.GET("/", sHandler.GetAllSegments)
-	
+
 	uHandler := handlers.NewUserHandler(repo, logger)
-	
+
 	userRoute := e.Group("/user")
 	userRoute.PUT("/", uHandler.UpdateUser)
 	userRoute.GET("/", uHandler.GetAllUsers)

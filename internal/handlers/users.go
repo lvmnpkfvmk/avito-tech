@@ -10,9 +10,10 @@ import (
 	"github.com/lvmnpkfvmk/avito-tech/internal/model"
 	"github.com/lvmnpkfvmk/avito-tech/internal/repository"
 )
+
 type UpdateUserRequest struct {
-	ID uint `json:"id,string"`
-	SegmentsToAdd model.Segments `json:"segments_to_add"`
+	ID               uint           `json:"id,string"`
+	SegmentsToAdd    model.Segments `json:"segments_to_add"`
 	SegmentsToDelete model.Segments `json:"segments_to_delete"`
 }
 
@@ -21,7 +22,7 @@ type GetUserRequest struct {
 }
 
 type UserHandler struct {
-	repo repository.ISegmentRepository
+	repo   repository.ISegmentRepository
 	logger *slog.Logger
 }
 

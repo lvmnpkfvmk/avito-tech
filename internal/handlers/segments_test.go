@@ -33,19 +33,19 @@ func (m *mockDummyDB) GetAllSegments() (*[]model.Segment, error) {
 }
 
 var (
-    // mockDB = map[string]*User{
-    //     "jon@labstack.com": &User{"Jon Snow", "jon@labstack.com"},
-    // }
-    userJSON = `{"name":"AVITO_VOICE_MESSAGES"}`
+	// mockDB = map[string]*User{
+	//     "jon@labstack.com": &User{"Jon Snow", "jon@labstack.com"},
+	// }
+	userJSON = `{"name":"AVITO_VOICE_MESSAGES"}`
 )
 
 func TestCreateSegment(t *testing.T) {
-    // Setup
-    e := echo.New()
-    req := httptest.NewRequest(http.MethodPost, "/segment", strings.NewReader(userJSON))
-    req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-    rec := httptest.NewRecorder()
-    c := e.NewContext(req, rec)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/segment", strings.NewReader(userJSON))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
 
 	mock := new(mockDummyDB)
 	mock.On("CreateSegment", &model.Segment{Name: "AVITO_VOICE_MESSAGES"}).Return(nil)
@@ -53,20 +53,20 @@ func TestCreateSegment(t *testing.T) {
 	nr := &SegmentHandler{mock, &slog.Logger{}}
 	r := "{\"data\":{\"name\":\"AVITO_VOICE_MESSAGES\"}}\n"
 
-    // Assertions
-    if assert.NoError(t, nr.CreateSegment(c)) {
-        assert.Equal(t, http.StatusCreated, rec.Code)
-        assert.Equal(t, string(r), rec.Body.String())
-    }
+	// Assertions
+	if assert.NoError(t, nr.CreateSegment(c)) {
+		assert.Equal(t, http.StatusCreated, rec.Code)
+		assert.Equal(t, string(r), rec.Body.String())
+	}
 }
 
 func TestDeleteSegment(t *testing.T) {
-    // Setup
-    e := echo.New()
-    req := httptest.NewRequest(http.MethodPost, "/segment", strings.NewReader(userJSON))
-    req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-    rec := httptest.NewRecorder()
-    c := e.NewContext(req, rec)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/segment", strings.NewReader(userJSON))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
 
 	mock := new(mockDummyDB)
 	mock.On("DeleteSegment", &model.Segment{Name: "AVITO_VOICE_MESSAGES"}).Return(nil)
@@ -74,20 +74,20 @@ func TestDeleteSegment(t *testing.T) {
 	nr := &SegmentHandler{mock, &slog.Logger{}}
 	r := "{\"message\":\"Segment AVITO_VOICE_MESSAGES has been deleted\"}\n"
 
-    // Assertions
-    if assert.NoError(t, nr.DeleteSegment(c)) {
-        assert.Equal(t, http.StatusOK, rec.Code)
-        assert.Equal(t, string(r), rec.Body.String())
-    }
+	// Assertions
+	if assert.NoError(t, nr.DeleteSegment(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, string(r), rec.Body.String())
+	}
 }
 
 func TestGetAllSegments(t *testing.T) {
-    // Setup
-    e := echo.New()
-    req := httptest.NewRequest(http.MethodPost, "/segment", strings.NewReader(userJSON))
-    req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
-    rec := httptest.NewRecorder()
-    c := e.NewContext(req, rec)
+	// Setup
+	e := echo.New()
+	req := httptest.NewRequest(http.MethodPost, "/segment", strings.NewReader(userJSON))
+	req.Header.Set(echo.HeaderContentType, echo.MIMEApplicationJSON)
+	rec := httptest.NewRecorder()
+	c := e.NewContext(req, rec)
 
 	mock := new(mockDummyDB)
 	mock.On("DeleteSegment", &model.Segment{Name: "AVITO_VOICE_MESSAGES"}).Return(nil)
@@ -95,9 +95,9 @@ func TestGetAllSegments(t *testing.T) {
 	nr := &SegmentHandler{mock, &slog.Logger{}}
 	r := ""
 
-    // Assertions
-    if assert.NoError(t, nr.GetAllSegments(c)) {
-        assert.Equal(t, http.StatusOK, rec.Code)
-        assert.Equal(t, string(r), rec.Body.String())
-    }
+	// Assertions
+	if assert.NoError(t, nr.GetAllSegments(c)) {
+		assert.Equal(t, http.StatusOK, rec.Code)
+		assert.Equal(t, string(r), rec.Body.String())
+	}
 }

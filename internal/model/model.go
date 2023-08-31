@@ -10,7 +10,7 @@ import (
 
 type User struct {
 	gorm.Model
-	Segments   *Segments `gorm:"many2many:user_tags;"`
+	Segments *Segments `gorm:"many2many:user_tags;"`
 }
 
 type Segment struct {
