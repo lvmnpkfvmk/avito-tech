@@ -159,7 +159,7 @@ curl -d '{"id":"3","segments_to_add":[{"name":"AVITO_VOICE_MESSAGES"}], "segment
 {"data":{"ID":3,"CreatedAt":"2023-08-31T18:25:01.650012Z","UpdatedAt":"2023-08-31T18:25:03.509546Z","DeletedAt":null,"Segments":[{"Name":"AVITO_VOICE_MESSAGES"}]}
 ```
 
-Запрос на изменение юзера:
+Запрос на получение юзера:
 ```sh
 curl -d '{"id":"1"}' -H "Content-Type: application/json" -X GET http://localhost:9090/user/id
 ```
