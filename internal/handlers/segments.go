@@ -83,3 +83,17 @@ func (sh *SegmentHandler) DeleteSegment(c echo.Context) error {
 	}
 	return c.JSON(http.StatusOK, response)
 }
+
+func (sh *SegmentHandler) GetAllSegments(c echo.Context) error {
+
+	segments, err := sh.repo.GetAllSegments()
+	if err != nil {
+		data := map[string]interface{}{
+			"message": err.Error(),
+		}
+
+		return c.JSON(http.StatusInternalServerError, data)
+	}
+
+	return c.JSON(http.StatusOK, segments)
+}

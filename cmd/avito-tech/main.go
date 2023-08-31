@@ -12,7 +12,6 @@ import (
 	"github.com/lvmnpkfvmk/avito-tech/internal/repository"
 )
 
-var repo repository.SegmentRepository
 
 func main() {
 	cfg := config.Get()
@@ -25,7 +24,7 @@ func main() {
 }
 
 func run(logger *slog.Logger, cfg *config.Config, ctx context.Context) error {
-	repo, err := repository.NewSegmentRepository(ctx, cfg)
+	repo, err := repository.NewRepository(ctx, cfg)
 	if err != nil {
 		logger.Error("Error creating repository", err)
 	}
@@ -45,6 +44,14 @@ func run(logger *slog.Logger, cfg *config.Config, ctx context.Context) error {
 	segmentRoute := e.Group("/segment")
 	segmentRoute.POST("/", sHandler.CreateSegment)
 	segmentRoute.DELETE("/", sHandler.DeleteSegment)
+	segmentRoute.GET("/", sHandler.GetAllSegments)
+	
+	uHandler := handlers.NewUserHandler(repo, logger)
+	
+	userRoute := e.Group("/user")
+	userRoute.PUT("/", uHandler.UpdateUser)
+	userRoute.GET("/", uHandler.GetAllUsers)
+	userRoute.GET("/id", uHandler.GetUser)
 
 	e.Logger.Fatal(e.Start(cfg.HTTPAddr))
 	return nil

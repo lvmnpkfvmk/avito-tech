@@ -9,6 +9,7 @@ import (
 	"github.com/lvmnpkfvmk/avito-tech/internal/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 var (
@@ -18,13 +19,17 @@ var (
 type ISegmentRepository interface {
 	CreateSegment(segment *model.Segment) error
 	DeleteSegment(segment *model.Segment) error
+	GetAllSegments() (*model.Segments, error)
+	GetUser(ID uint) (*model.User, error)
+	GetAllUsers() (*[]model.User, error)
+	UpdateUser(user *model.User) error
 }
 
-type SegmentRepository struct {
+type Repository struct {
 	db    *gorm.DB
 }
 
-func NewSegmentRepository(ctx context.Context, cfg *config.Config) (*SegmentRepository, error) {
+func NewRepository(ctx context.Context, cfg *config.Config) (*Repository, error) {
 	db, err := gorm.Open(postgres.Open(cfg.PgURL), &gorm.Config{})
 	if err != nil {
 		return nil, fmt.Errorf("Error opening gorm: %v", err)
@@ -40,27 +45,65 @@ func NewSegmentRepository(ctx context.Context, cfg *config.Config) (*SegmentRepo
 		return nil, fmt.Errorf("Error AutoMigrate Segment: %v", err)
 	}
 
-	repo := &SegmentRepository{db}
+	// Do nothing on conflict
+	db.Clauses(clause.OnConflict{DoNothing: true}).Create(&model.Segment{})
+
+	repo := &Repository{db}
 
 	return repo, nil
 }
 
-func (sr *SegmentRepository) GetSegmentByID(orderUID string) (*model.User, error) {
+func (sr *Repository) GetSegmentByID(orderUID string) (*model.User, error) {
 	return nil, nil
 }
 
-func (sr *SegmentRepository) CreateSegment(segment *model.Segment) error {
-	result := sr.db.Model(&model.Segment{}).Create(segment)
+func (sr *Repository) CreateSegment(segment *model.Segment) error {
+	// result := sr.db.Model(&model.Segment{}).Create(segment)
+	result := sr.db.FirstOrCreate(&model.Segment{}, segment)
 	if result.Error != nil {
 		return fmt.Errorf("Error creating segment: %v", result.Error)
 	}
 	return nil
 }
 
-func (sr *SegmentRepository) DeleteSegment(segment *model.Segment) error {
+func (sr *Repository) DeleteSegment(segment *model.Segment) error {
 	result := sr.db.Model(&model.Segment{}).Where("name = ?", segment.Name).Delete(segment)
 	if result.Error != nil {
 		return fmt.Errorf("Error deleting segment: %v", result.Error)
+	}
+	return nil
+}
+
+func (sr *Repository) GetAllSegments() (*model.Segments, error) {
+	var segments model.Segments
+	result := sr.db.Model(&model.Segment{}).Find(&segments)
+	if result.Error != nil {
+		return nil, fmt.Errorf("Error getting segments: %v", result.Error)
+	}
+	return &segments, nil
+}
+
+func (sr *Repository) GetUser(ID uint) (*model.User, error) {
+	user := model.User{}
+	result := sr.db.First(&user, ID)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &user, nil
+}
+func (sr *Repository) GetAllUsers() (*[]model.User, error) {
+	var users []model.User
+	result := sr.db.Model(&model.User{}).Find(&users)
+	if result.Error != nil {
+		return nil, fmt.Errorf("Error getting segments: %v", result.Error)
+	}
+	return &users, nil
+}
+
+func (sr *Repository) UpdateUser(user *model.User) error {
+	result := sr.db.Model(&model.User{}).Where("id = ?", user.ID).Updates(user)
+	if result.Error != nil {
+		return fmt.Errorf("Error getting segments: %v", result.Error)
 	}
 	return nil
 }
