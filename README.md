@@ -128,7 +128,7 @@ docker-compose up
 ```
 ### Примеры curl-команд
 
-Запрос:
+Запрос на добавление сегмента:
 ```sh
 curl -d '{"name": "AVITO_VOICE_MESSAGES"}' -H "Content-Type: application/json" -X POST http://localhost:9090/segment/
 ```
@@ -138,7 +138,7 @@ curl -d '{"name": "AVITO_VOICE_MESSAGES"}' -H "Content-Type: application/json" -
 {"data":{"name":"AVITO_VOICE_MESSAGES"}}
 ```
 
-Запрос:
+Запрос на удаление сегмента:
 ```sh
 curl -d '{"name": "AVITO_VOICE_MESSAGES"}' -H "Content-Type: application/json" -X DELETE http://localhost:9090/segment/
 ```
@@ -146,4 +146,25 @@ curl -d '{"name": "AVITO_VOICE_MESSAGES"}' -H "Content-Type: application/json" -
 Ответ:
 ```
 {"message":"Segment AVITO_VOICE_MESSAGES has been deleted"}
+```
+
+
+Запрос на изменение юзера:
+```sh
+curl -d '{"id":"3","segments_to_add":[{"name":"AVITO_VOICE_MESSAGES"}], "segments_to_delete":[{"name":"AVITO_DISCOUNT_50"}]}' -H "Content-Type: application/json" -X GET http://localhost:9090/user/
+```
+
+Ответ:
+```
+{"data":{"ID":3,"CreatedAt":"2023-08-31T18:25:01.650012Z","UpdatedAt":"2023-08-31T18:25:03.509546Z","DeletedAt":null,"Segments":[{"Name":"AVITO_VOICE_MESSAGES"}]}
+```
+
+Запрос на изменение юзера:
+```sh
+curl -d '{"id":"1"}' -H "Content-Type: application/json" -X GET http://localhost:9090/user/id
+```
+
+Ответ:
+```
+{"ID":3,"CreatedAt":"2023-08-31T18:25:01.650012Z","UpdatedAt":"2023-08-31T18:25:11.260537Z","DeletedAt":null,"Segments":[{"Name":"AVITO_VOICE_MESSAGES"}]}
 ```
