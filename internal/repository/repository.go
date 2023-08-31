@@ -15,6 +15,11 @@ var (
 	ErrNotFound = errors.New("User not found")
 )
 
+type ISegmentRepository interface {
+	CreateSegment(segment *model.Segment) error
+	DeleteSegment(segment *model.Segment) error
+}
+
 type SegmentRepository struct {
 	db    *gorm.DB
 }
@@ -27,22 +32,35 @@ func NewSegmentRepository(ctx context.Context, cfg *config.Config) (*SegmentRepo
 
 	err = db.AutoMigrate(&model.User{})
 	if err != nil {
-		return nil, fmt.Errorf("Error AutoMigrate: %v", err)
+		return nil, fmt.Errorf("Error AutoMigrate User: %v", err)
 	}
 
-	var users []model.User
-	result := db.Find(&users)
-	if result.Error != nil {
-		return nil, fmt.Errorf("Error retrieving orders: %v", err)
+	err = db.AutoMigrate(&model.Segment{})
+	if err != nil {
+		return nil, fmt.Errorf("Error AutoMigrate Segment: %v", err)
 	}
 
-	return &SegmentRepository{db}, nil
+	repo := &SegmentRepository{db}
+
+	return repo, nil
 }
 
 func (sr *SegmentRepository) GetSegmentByID(orderUID string) (*model.User, error) {
 	return nil, nil
 }
 
-func (sr *SegmentRepository) CreateOrder(order *model.User) error {
+func (sr *SegmentRepository) CreateSegment(segment *model.Segment) error {
+	result := sr.db.Model(&model.Segment{}).Create(segment)
+	if result.Error != nil {
+		return fmt.Errorf("Error creating segment: %v", result.Error)
+	}
+	return nil
+}
+
+func (sr *SegmentRepository) DeleteSegment(segment *model.Segment) error {
+	result := sr.db.Model(&model.Segment{}).Where("name = ?", segment.Name).Delete(segment)
+	if result.Error != nil {
+		return fmt.Errorf("Error deleting segment: %v", result.Error)
+	}
 	return nil
 }

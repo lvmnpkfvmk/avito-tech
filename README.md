@@ -126,3 +126,24 @@
 git clone https://github.com/lvmnpkfvmk/avito-tech.git
 docker-compose up
 ```
+### Примеры curl-команд
+
+Запрос:
+```sh
+curl -d '{"name": "AVITO_VOICE_MESSAGES"}' -H "Content-Type: application/json" -X POST http://localhost:9090/segment/
+```
+
+Ответ:
+```
+{"data":{"name":"AVITO_VOICE_MESSAGES"}}
+```
+
+Запрос:
+```sh
+curl -d '{"name": "AVITO_VOICE_MESSAGES"}' -H "Content-Type: application/json" -X DELETE http://localhost:9090/segment/
+```
+
+Ответ:
+```
+{"message":"Segment AVITO_VOICE_MESSAGES has been deleted"}
+```

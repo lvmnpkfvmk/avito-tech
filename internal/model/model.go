@@ -4,11 +4,10 @@ import "gorm.io/gorm"
 
 type User struct {
 	gorm.Model
-	UserID string
-	Tags   []Tag `gorm:"many2many:user_tags;"`
+	Segments   []Segment `gorm:"many2many:user_tags;"`
 }
 
-type Tag struct {
+type Segment struct {
 	gorm.Model
-	Name string
+	Name string `json:"name"`
 }
