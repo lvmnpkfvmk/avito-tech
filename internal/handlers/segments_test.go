@@ -27,9 +27,29 @@ func (m *mockDummyDB) DeleteSegment(segment *model.Segment) error {
 	return args.Error(0)
 }
 
-func (m *mockDummyDB) GetAllSegments() (*[]model.Segment, error) {
+func (m *mockDummyDB) GetAllSegments() (*model.Segments, error) {
 	args := m.Called()
 	return nil, args.Error(0)
+}
+
+func (m *mockDummyDB) CreateUser(user *model.User) error {
+	args := m.Called()
+	return args.Error(0)
+}
+
+func (m *mockDummyDB) GetUser(ID uint) (*model.User, error) {
+	args := m.Called()
+	return nil, args.Error(0)
+}
+
+func (m *mockDummyDB) GetAllUsers() (*[]model.User, error) {
+	args := m.Called()
+	return nil, args.Error(0)
+}
+
+func (m *mockDummyDB) UpdateUser(user *model.User) error {
+	args := m.Called()
+	return args.Error(0)
 }
 
 var (

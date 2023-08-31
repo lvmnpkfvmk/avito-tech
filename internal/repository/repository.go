@@ -9,7 +9,6 @@ import (
 	"github.com/lvmnpkfvmk/avito-tech/internal/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 )
 
 var (
