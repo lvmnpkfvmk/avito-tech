@@ -1,7 +1,6 @@
 package handlers
 
 import (
-	"fmt"
 	"log/slog"
 	"net/http"
 
@@ -41,27 +40,32 @@ func (sh *UserHandler) UpdateUser(c echo.Context) error {
 
 		return c.JSON(http.StatusInternalServerError, data)
 	}
-	fmt.Println(b)
 
 	user, err := sh.repo.GetUser(b.ID)
-
-	fmt.Println(user)
 
 	if err != nil && user == nil { // user does not exist
 		user = &model.User{}
 		user.Segments = &b.SegmentsToAdd
+
+		if err := sh.repo.CreateUser(user); err != nil {
+			data := map[string]interface{}{
+				"message": err,
+			}
+
+			return c.JSON(http.StatusInternalServerError, data)
+		}
 	} else {
 		user.ID = b.ID
 		x := append(b.SegmentsToAdd, *user.Segments...)
 		user.Segments = algo.FilterSegments(&x, &b.SegmentsToDelete)
-	}
 
-	if err := sh.repo.UpdateUser(user); err != nil {
-		data := map[string]interface{}{
-			"message": err,
+		if err := sh.repo.UpdateUser(user); err != nil {
+			data := map[string]interface{}{
+				"message": err,
+			}
+
+			return c.JSON(http.StatusInternalServerError, data)
 		}
-
-		return c.JSON(http.StatusInternalServerError, data)
 	}
 
 	response := map[string]interface{}{

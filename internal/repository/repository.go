@@ -20,6 +20,7 @@ type ISegmentRepository interface {
 	CreateSegment(segment *model.Segment) error
 	DeleteSegment(segment *model.Segment) error
 	GetAllSegments() (*model.Segments, error)
+	CreateUser(user *model.User) error
 	GetUser(ID uint) (*model.User, error)
 	GetAllUsers() (*[]model.User, error)
 	UpdateUser(user *model.User) error
@@ -45,9 +46,6 @@ func NewRepository(ctx context.Context, cfg *config.Config) (*Repository, error)
 		return nil, fmt.Errorf("Error AutoMigrate Segment: %v", err)
 	}
 
-	// Do nothing on conflict
-	db.Clauses(clause.OnConflict{DoNothing: true}).Create(&model.Segment{})
-
 	repo := &Repository{db}
 
 	return repo, nil
@@ -58,7 +56,6 @@ func (sr *Repository) GetSegmentByID(orderUID string) (*model.User, error) {
 }
 
 func (sr *Repository) CreateSegment(segment *model.Segment) error {
-	// result := sr.db.Model(&model.Segment{}).Create(segment)
 	result := sr.db.FirstOrCreate(&model.Segment{}, segment)
 	if result.Error != nil {
 		return fmt.Errorf("Error creating segment: %v", result.Error)
@@ -87,7 +84,7 @@ func (sr *Repository) GetUser(ID uint) (*model.User, error) {
 	user := model.User{}
 	result := sr.db.First(&user, ID)
 	if result.Error != nil {
-		return nil, result.Error
+		return nil, fmt.Errorf("Error getting user: %v", result.Error)
 	}
 	return &user, nil
 }
@@ -95,15 +92,23 @@ func (sr *Repository) GetAllUsers() (*[]model.User, error) {
 	var users []model.User
 	result := sr.db.Model(&model.User{}).Find(&users)
 	if result.Error != nil {
-		return nil, fmt.Errorf("Error getting segments: %v", result.Error)
+		return nil, fmt.Errorf("Error getting users: %v", result.Error)
 	}
 	return &users, nil
+}
+
+func (sr *Repository) CreateUser(user *model.User) error {
+	result := sr.db.Model(&model.User{}).Create(user)
+	if result.Error != nil {
+		return fmt.Errorf("Error creating user: %v", result.Error)
+	}
+	return nil
 }
 
 func (sr *Repository) UpdateUser(user *model.User) error {
 	result := sr.db.Model(&model.User{}).Where("id = ?", user.ID).Updates(user)
 	if result.Error != nil {
-		return fmt.Errorf("Error getting segments: %v", result.Error)
+		return fmt.Errorf("Error updating user: %v", result.Error)
 	}
 	return nil
 }
